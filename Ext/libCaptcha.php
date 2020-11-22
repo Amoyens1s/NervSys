@@ -48,8 +48,8 @@ class libCaptcha extends Factory
         self::TYPE_CALC,
     ];
 
-    /** @var \ext\libCrypt $crypt */
-    public object $crypt;
+    /** @var \ext\libCrypt $lib_crypt */
+    public object $lib_crypt;
 
     /** @var \Redis $redis */
     public \Redis $redis;
@@ -70,15 +70,15 @@ class libCaptcha extends Factory
     /**
      * Bind to Crypt object
      *
-     * @param object $crypt
+     * @param object $lib_crypt
      *
      * @return $this
      */
-    public function bindCrypt(object $crypt): self
+    public function bindCrypt(object $lib_crypt): self
     {
-        $this->crypt = &$crypt;
+        $this->lib_crypt = &$lib_crypt;
 
-        unset($crypt);
+        unset($lib_crypt);
         return $this;
     }
 
@@ -309,7 +309,7 @@ class libCaptcha extends Factory
             unset($key_name);
         } else {
             //Store in client
-            $key_hash = $this->crypt->sign(json_encode(['hash' => &$code, 'life' => time() + $life]));
+            $key_hash = $this->lib_crypt->sign(json_encode(['hash' => &$code, 'life' => time() + $life]));
         }
 
         unset($code, $life);
@@ -334,7 +334,7 @@ class libCaptcha extends Factory
             unset($key_name);
         } else {
             //Store in client
-            if ('' === $res = $this->crypt->verify($hash)) {
+            if ('' === $res = $this->lib_crypt->verify($hash)) {
                 return '';
             }
 
